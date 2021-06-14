@@ -5,7 +5,6 @@ if (isset($_POST['submit'])) {
     // validate entries
     $User = new UserController($_POST);
     $errors = $User->validateForm();
-    $User->validateForm();
 
     // save to db
 }
@@ -32,11 +31,11 @@ if (isset($_POST['submit'])) {
     </head>
 
     <body>
-        <form method="post">
+        <form method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>">
             <label for="email">Email</label>
             <input type="text" placeholder="please enter your email" name='email'>
             <div class="error">
-                <?php echo $errors['email']  ?? '' ?>
+                <?php echo $errors['email'] ?? '' ?>
             </div>
             <label for="password">password</label>
             <input type="password" placeholder="please enter your password" name='password'>

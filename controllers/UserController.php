@@ -7,16 +7,20 @@ require_once 'Database.php';
 class UserController
 {
     private $data;
-    private $errors = [];
+    public $errors = [];
     private static $fields = ['email', 'password'];
     public function post($data)
     {
-        $user = User::login($data['email'], $data['password']);
-        if ($user) {
-            return json_encode($user);
-        }
+        // nu een mysql statement maken om te zorgen dat het in de db word gedaan
+        // TODO: nog zorgen dat er geen illigale tekens kunnen gepost
+        if (empty($this->errors)) {
+            $user = User::login($data['email'], $data['password']);
+            if ($user) {
+                return json_encode($user);
+            }
 
-        return json_encode(['todo' => 'Assignment 1: User Authentication']);
+            return json_encode(['todo' => 'Assignment 1: User Authentication']);
+        }
     }
     public function get($data)
     {
@@ -25,33 +29,36 @@ class UserController
             return json_encode($get);
         }
     }
-    // my functions 
+    // my functions
     public function __construct($post_data)
     {
+        // save post data so we can easily use it
         $this->data = $post_data;
     }
     public function validateForm()
     {
+        // foreach field we want to check
         foreach (self::$fields as $field) {
-            var_dump(self::$fields);
-            // var_dump($this->data);
-            var_dump(array_key_exists($field, $this->data));
             if (!array_key_exists($field, $this->data)) {
-                echo ("$field is not present in data");
-                return;
+                trigger_error("$field is not present in data");
             }
         }
+        // validate email and password
         $this->validateEmail();
         $this->validatePassword();
+        $this->post($this->data);
         return $this->errors;
     }
     public function validatePassword()
     {
+        // trim password so there are no accidental spaces
         $val = trim($this->data['password']);
 
+        // if password is empty return it to the var errors
         if (empty($val)) {
             $this->addError('password', 'password cannot be empty');
         } else {
+            // check if the pasword is 'legal'
             if (!preg_match('/^[a-zA-Z0-9]{3,18}$/', $val)) {
                 $this->addError('password', 'enter a valid password');
             }
@@ -59,6 +66,7 @@ class UserController
     }
     public function validateEmail()
     {
+        // trim email so there are no accidental spaces
         $val = trim($this->data['email']);
 
         if (empty($val)) {
@@ -72,9 +80,10 @@ class UserController
 
     public function addError($key, $val)
     {
-        $this->error[$key] = $val;
+        // save all errors
+        $this->errors[$key] = $val;
     }
 }
 
-// email validation 
+// email validation
 // password validation
