@@ -10,7 +10,8 @@ class Category
         // check if there is an instance
         $db = Database::getInstance();
         // db query
-        $res = $db->query('SELECT * FROM categories');
+        $res = $db->query('SELECT * FROM `categories`');
+        // ORDER BY `categories`.`parent_id` ASC
         // if $res is more than 0 return all categories
         if (count($res) > 0) {
             return $res;

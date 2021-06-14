@@ -2,6 +2,7 @@
 
 require_once 'models/User.php';
 require_once 'models/Category.php';
+require_once 'CategoryController.php';
 require_once 'Database.php';
 
 class UserController
@@ -22,12 +23,10 @@ class UserController
             return json_encode(['todo' => 'Assignment 1: User Authentication']);
         }
     }
-    public function get($data)
+    public function get()
     {
         $get = Category::getAll();
-        if ($get) {
-            return json_encode($get);
-        }
+        return CategoryController::get($get);
     }
     // my functions
     public function __construct($post_data)
