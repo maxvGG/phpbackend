@@ -1,23 +1,11 @@
 <?php
-$fruits = array(
-    "a" => array("b" => 'banana'), "o" => "orange",
-    array(
-        "a" => "apple", "p" => "pear",
-    ),
-);
-
-$iterator = new RecursiveArrayIterator($fruits);
-
-while ($iterator->valid()) {
-
-    if ($iterator->hasChildren()) {
-        // print all children
-        foreach ($iterator->getChildren() as $key => $value) {
-            echo $key . ' : ' . $value . "\n";
-        }
-    } else {
-        echo "No children.\n";
-    }
-
-    $iterator->next();
+function factorial($n)
+{
+    if ($n < 0)
+        return -1; /*Wrong value*/
+    if ($n == 0)
+        return 1; /*Terminating condition*/
+    return ($n * factorial($n - 1));
 }
+
+echo factorial(6);

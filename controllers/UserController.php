@@ -10,25 +10,46 @@ class UserController
     private $data;
     public $errors = [];
     private static $fields = ['email', 'password'];
-    public function post($data)
+    private function post($data)
     {
         // nu een mysql statement maken om te zorgen dat het in de db word gedaan
         // TODO: nog zorgen dat er geen illigale tekens kunnen gepost
         if (empty($this->errors)) {
             $user = User::login($data['email'], $data['password']);
             if ($user) {
-                return json_encode($user);
+                // hier de code voor het redirecten/ als de user is ingelogd 
+                return var_dump($user);
             }
 
-            return json_encode(['todo' => 'Assignment 1: User Authentication']);
+            return json_encode(['todo' => 'an unexcepted error occurred please try loggin in again']);
         }
     }
     public function get()
     {
+        echo "user controller";
         $get = Category::getAll();
-        return CategoryController::get($get);
+        $iterator = new RecursiveArrayIterator($get);
+        // echo "category controller";
+        while ($iterator->valid()) {
+
+            if ($iterator->hasChildren()) {
+                // print all children
+                echo "<tr style='border: 1px solid black'>";
+                foreach ($iterator->getChildren() as $key => $value) {
+                    // if (!$value = null) {
+                    echo "<td style='border: 1px solid black' loading='lazy'>" . $key . "</td>";
+                    echo "<td style='border: 1px solid black' loading='lazy' class='value'>" . $value . "</td>";
+                    // }
+                }
+                echo "</tr>";
+            } else {
+                echo "No children. \n";
+            }
+            $iterator->next();
+        }
+        // TODO: Assignment 2
+        // return CategoryController::get($get);
     }
-    // my functions
     public function __construct($post_data)
     {
         // save post data so we can easily use it

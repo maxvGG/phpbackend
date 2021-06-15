@@ -9,9 +9,9 @@ header("Access-Control-Allow-Methods: POST, PUT, DELETE, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
 
 $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : null;
-// $action = isset($_REQUEST['action']) ? 'user' : null;
 $body = json_decode(file_get_contents('php://input'), true);
-$controller = sprintf('%sController', ucfirst($action));
+
+$controller = sprintf('%sUserController', ucfirst($action));
 $path = sprintf('%s/controllers/%s.php', dirname(__FILE__), $controller);
 
 if (isset($_POST['submit'])) {
@@ -58,7 +58,7 @@ if (isset($_POST['submit'])) {
             <div class="error">
                 <?php echo $errors['password'] ?? '' ?>
             </div>
-            <input type="submit" value="submit" name='action'>
+            <input type="submit" value="submit" name='submit'>
         </form>
         <table style='border: 1px solid black'>
             <tr style='border: 1px solid black'>
@@ -72,14 +72,12 @@ if (isset($_POST['submit'])) {
                 $instance = new $controller(null);
 
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    $instance->post($body);
-                    echo "post";
+                    // $instance->post($body);
                     exit;
                 }
 
                 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $instance->get($body);
-                    echo "get";
                     exit;
                 }
             }
