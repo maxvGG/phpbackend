@@ -26,14 +26,13 @@ class CategoryController
             }
             $iterator->next();
         }
-        // TODO: Assignment 2
         return Category::getAll();
     }
 
-    public function get($data)
+    public function get()
     {
+        $data = Category::getAll();
         $iterator = new RecursiveArrayIterator($data);
-        echo "category controller";
         while ($iterator->valid()) {
 
             if ($iterator->hasChildren()) {
@@ -51,7 +50,6 @@ class CategoryController
             }
             $iterator->next();
         }
-        // TODO: Assignment 2
         return Category::getAll();
     }
 }

@@ -10,10 +10,22 @@ class UserController
     private $data;
     public $errors = [];
     private static $fields = ['email', 'password'];
-    private function post($data)
+
+    public function __construct($post_data)
+    {
+        // save post data so we can easily use it
+        $this->data = $post_data;
+    }
+
+    public function addError($key, $val)
+    {
+        // save all errors
+        $this->errors[$key] = $val;
+    }
+
+    private function userlogin($data)
     {
         // nu een mysql statement maken om te zorgen dat het in de db word gedaan
-        // TODO: nog zorgen dat er geen illigale tekens kunnen gepost
         if (empty($this->errors)) {
             $user = User::login($data['email'], $data['password']);
             if ($user) {
@@ -26,36 +38,10 @@ class UserController
     }
     public function get()
     {
-        echo "user controller";
-        $get = Category::getAll();
-        $iterator = new RecursiveArrayIterator($get);
-        // echo "category controller";
-        while ($iterator->valid()) {
+        return Null;
+    }
 
-            if ($iterator->hasChildren()) {
-                // print all children
-                echo "<tr style='border: 1px solid black'>";
-                foreach ($iterator->getChildren() as $key => $value) {
-                    // if (!$value = null) {
-                    echo "<td style='border: 1px solid black' loading='lazy'>" . $key . "</td>";
-                    echo "<td style='border: 1px solid black' loading='lazy' class='value'>" . $value . "</td>";
-                    // }
-                }
-                echo "</tr>";
-            } else {
-                echo "No children. \n";
-            }
-            $iterator->next();
-        }
-        // TODO: Assignment 2
-        // return CategoryController::get($get);
-    }
-    public function __construct($post_data)
-    {
-        // save post data so we can easily use it
-        $this->data = $post_data;
-    }
-    public function validateForm()
+    public function post()
     {
         // foreach field we want to check
         foreach (self::$fields as $field) {
@@ -66,7 +52,7 @@ class UserController
         // validate email and password
         $this->validateEmail();
         $this->validatePassword();
-        $this->post($this->data);
+        $this->userlogin($this->data);
         return $this->errors;
     }
     public function validatePassword()
@@ -96,12 +82,6 @@ class UserController
                 $this->addError('email', 'enter a valid email');
             }
         }
-    }
-
-    public function addError($key, $val)
-    {
-        // save all errors
-        $this->errors[$key] = $val;
     }
 }
 

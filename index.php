@@ -14,13 +14,11 @@ $body = json_decode(file_get_contents('php://input'), true);
 $controller = sprintf('%sController', ucfirst($action));
 $path = sprintf('%s/controllers/%s.php', dirname(__FILE__), $controller);
 
-if (isset($_POST['submit'])) {
-    // validate entries
-    $User = new UserController($_POST);
-    $errors = $User->validateForm();
-
-    // save to db
-}
+// if (isset($_POST['submit'])) {
+//     // validate entries
+//     $User = new UserController($_POST);
+//     $errors = $User->post();
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,7 +45,34 @@ if (isset($_POST['submit'])) {
     </head>
 
     <body>
-        <form method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>">
+        <button><a href="index.php?action=category">categories</a></button>
+        <button><a href="index.php?action=user">users</a></button>
+        <table style='border: 1px solid black'>
+            <tr style='border: 1px solid black'>
+                <th style='border: 1px solid black' colspan='2'>id</th>
+                <th style='border: 1px solid black' colspan='2'>name</th>
+                <th style='border: 1px solid black' colspan='2'>parent id</th>
+            </tr>
+            <?php
+            if (file_exists($path) === true) {
+                require_once $path;
+                $instance = new $controller($_POST);
+
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $errors = $instance->post();
+                    var_dump($instance);
+                    echo "post";
+                }
+
+                if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                    $errors = $instance->get($body);
+                    var_dump($instance);
+                    echo "get";
+                }
+            }
+            ?>
+        </table>
+        <form method="post">
             <label for="email">Email</label>
             <input type="text" placeholder="please enter your email" name='email'>
             <div class="error">
@@ -58,33 +83,9 @@ if (isset($_POST['submit'])) {
             <div class="error">
                 <?php echo $errors['password'] ?? '' ?>
             </div>
-            <input type="submit" value="submit" name='action'>
+            <input type="submit" value="submit" name='submit'>
         </form>
-        <table style='border: 1px solid black'>
-            <tr style='border: 1px solid black'>
-                <th style='border: 1px solid black' colspan='2'>id</th>
-                <th style='border: 1px solid black' colspan='2'>name</th>
-                <th style='border: 1px solid black' colspan='2'>parent id</th>
-            </tr>
-            <?php
-            if (file_exists($path) === true) {
-                require_once $path;
-                $instance = new $controller(null);
 
-                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    $instance->post($body);
-                    echo "post";
-                    exit;
-                }
-
-                if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-                    $instance->get($body);
-                    echo "get";
-                    exit;
-                }
-            }
-            ?>
-        </table>
     </body>
 
     </html>
